@@ -1,0 +1,246 @@
+/*
+The CALCULATE command controls the aggregation of leaf cells in the cube.
+If the CALCULATE command is deleted or modified, the data within the cube is affected.
+You should edit this command only if you manually specify how the cube is aggregated.
+*/
+CALCULATE;      
+CREATE MEMBER CURRENTCUBE.[Measures].[Себестоимость фикс руб]
+AS [Measures].[СебестоимостьФикс], 
+FORMAT_STRING = "### ### ### ##0.00", 
+VISIBLE = 1 ,  ASSOCIATED_MEASURE_GROUP = 'Продажи';      
+CREATE MEMBER CURRENTCUBE.[Measures].[Себестоимость фикс руб шт]
+AS iif([Measures].[КоличествоФикс] = 0, null,[Себестоимость фикс руб] / [Measures].[КоличествоФикс]), 
+FORMAT_STRING = "### ### ### ##0.00", 
+VISIBLE = 1 ,  ASSOCIATED_MEASURE_GROUP = 'Продажи';             
+CREATE MEMBER CURRENTCUBE.[Measures].[Профит]
+AS [Measures].[Оборот]-[Measures].[Себестоимость], 
+FORMAT_STRING = "### ### ### ##0.00", 
+VISIBLE = 1 ,  ASSOCIATED_MEASURE_GROUP = 'Продажи';             
+CREATE MEMBER CURRENTCUBE.[Measures].[Наценка %]
+AS iif([Measures].[Себестоимость] = 0, null, round(([Measures].[Оборот] - [Measures].[Себестоимость]) / [Measures].[Себестоимость], 4)), 
+FORMAT_STRING = "Percent", 
+VISIBLE = 1 ,  ASSOCIATED_MEASURE_GROUP = 'Продажи';             
+CREATE MEMBER CURRENTCUBE.[Measures].[Маржа %]
+AS iif([Measures].[Оборот] = 0, null, round(([Measures].[Оборот] - [Measures].[Себестоимость]) / [Measures].[Оборот], 4)), 
+FORMAT_STRING = "Percent", 
+VISIBLE = 1 ,  ASSOCIATED_MEASURE_GROUP = 'Продажи';               
+CREATE MEMBER CURRENTCUBE.[Measures].[Прямые расходы ТН]
+AS [Measures].[S000000007] + [Measures].[S000000008] + [Measures].[S000000009] + [Measures].[S000000010] + [Measures].[S000000011] + [Measures].[S000000012] + [Measures].[S000000013] + [Measures].[S000000014], 
+FORMAT_STRING = "### ### ### ##0.00", 
+VISIBLE = 1 ,  DISPLAY_FOLDER = 'Затраты' ,  ASSOCIATED_MEASURE_GROUP = 'Продажи'; 
+CREATE MEMBER CURRENTCUBE.[Measures].[Прямые расходы ТН М]
+AS [Measures].[MS000000007] + [Measures].[MS000000008] + [Measures].[MS000000009] + [Measures].[MS000000010] + [Measures].[MS000000011] + [Measures].[MS000000012] + [Measures].[MS000000013] + [Measures].[MS000000014], 
+FORMAT_STRING = "### ### ### ##0.00", 
+VISIBLE = 0 ,  ASSOCIATED_MEASURE_GROUP = 'Продажи'  ;            
+CREATE MEMBER CURRENTCUBE.[Measures].[Прямые расходы ТН %]
+AS iif([Measures].[Себестоимость] = 0, null, [Measures].[Прямые расходы ТН] / [Measures].[Себестоимость]), 
+FORMAT_STRING = "Percent", 
+VISIBLE = 1 ,  DISPLAY_FOLDER = 'Затраты' ,  ASSOCIATED_MEASURE_GROUP = 'Продажи';               
+CREATE MEMBER CURRENTCUBE.[Measures].[Прямые расходы КП]
+AS [Measures].[S000000001]+[Measures].[S000000002]+[Measures].[S000000003]+[Measures].[S000000004]+ [Measures].[S000000005]+[Measures].[S000000006]+[Measures].[S000000020], 
+FORMAT_STRING = "### ### ### ##0.00", 
+VISIBLE = 1 ,  DISPLAY_FOLDER = 'Затраты' ,  ASSOCIATED_MEASURE_GROUP = 'Продажи'; 
+CREATE MEMBER CURRENTCUBE.[Measures].[Прямые расходы КП М]
+AS [Measures].[MS000000001]+[Measures].[MS000000002]+[Measures].[MS000000003]+[Measures].[MS000000004]+ [Measures].[MS000000005]+[Measures].[MS000000006]+[Measures].[MS000000020], 
+FORMAT_STRING = "### ### ### ##0.00", 
+VISIBLE = 0 ,  ASSOCIATED_MEASURE_GROUP = 'Продажи'  ;            
+CREATE MEMBER CURRENTCUBE.[Measures].[Прямые расходы КП %]
+AS iif([Measures].[Оборот] = 0, null, [Measures].[Прямые расходы КП] / [Measures].[Оборот]), 
+FORMAT_STRING = "Percent", 
+VISIBLE = 1 ,  DISPLAY_FOLDER = 'Затраты' ,  ASSOCIATED_MEASURE_GROUP = 'Продажи';             
+CREATE MEMBER CURRENTCUBE.[Measures].[Косвенные постоянные затраты]
+AS [Measures].[S000000019], 
+FORMAT_STRING = "### ### ### ##0.00", 
+VISIBLE = 1 ,  DISPLAY_FOLDER = 'Затраты' ,  ASSOCIATED_MEASURE_GROUP = 'Продажи'  ; 
+CREATE MEMBER CURRENTCUBE.[Measures].[Косвенные постоянные затраты М]
+AS [Measures].[MS000000019], 
+FORMAT_STRING = "### ### ### ##0.00", 
+VISIBLE = 0 ,  ASSOCIATED_MEASURE_GROUP = 'Продажи'  ;             
+CREATE MEMBER CURRENTCUBE.[Measures].[Косвенные переменные затраты]
+AS [Measures].[S000000015] + [Measures].[S000000016] +[Measures].[S000000017] + [Measures].[S000000018] + [Measures].[S000000021], 
+FORMAT_STRING = "### ### ### ##0.00", 
+VISIBLE = 1 ,  DISPLAY_FOLDER = 'Затраты' ,  ASSOCIATED_MEASURE_GROUP = 'Продажи'; 
+CREATE MEMBER CURRENTCUBE.[Measures].[Косвенные переменные затраты М]
+AS [Measures].[MS000000015] + [Measures].[MS000000016] +[Measures].[MS000000017] + [Measures].[MS000000018] + [Measures].[MS000000021], 
+FORMAT_STRING = "### ### ### ##0.00", 
+VISIBLE = 0 ,  ASSOCIATED_MEASURE_GROUP = 'Продажи'  ;      
+CREATE MEMBER CURRENTCUBE.[Measures].[Прямые затраты базовые руб]
+AS [Measures].[MS000000001]+[Measures].[MS000000002]+[Measures].[MS000000003]+[Measures].[MS000000004]+ [Measures].[MS000000005]+[Measures].[MS000000006]+[Measures].[MS000000020] + [Measures].[MS000000007] + [Measures].[MS000000008] + [Measures].[MS000000009] + [Measures].[MS000000010] + [Measures].[MS000000011] + [Measures].[MS000000012] + [Measures].[MS000000013] + [Measures].[MS000000014], 
+FORMAT_STRING = "### ### ### ##0.00", 
+VISIBLE = 1 ,  DISPLAY_FOLDER = 'Затраты' ,  ASSOCIATED_MEASURE_GROUP = 'Продажи';      
+CREATE MEMBER CURRENTCUBE.[Measures].[Косвенные переменные затраты базовые руб]
+AS [Measures].[MS000000015] + [Measures].[MS000000016] +[Measures].[MS000000017] + [Measures].[MS000000018] + [Measures].[MS000000021], 
+FORMAT_STRING = "### ### ### ##0.00", 
+VISIBLE = 1 ,  DISPLAY_FOLDER = 'Затраты' ,  ASSOCIATED_MEASURE_GROUP = 'Продажи';      
+CREATE MEMBER CURRENTCUBE.[Measures].[Себестоимость базовая руб]
+AS [Себестоимость фикс руб] + [Measures].[Прямые затраты базовые руб] + [Measures].[Косвенные переменные затраты базовые руб], 
+FORMAT_STRING = "### ### ### ##0.00", 
+VISIBLE = 1 ,  ASSOCIATED_MEASURE_GROUP = 'Продажи';      
+CREATE MEMBER CURRENTCUBE.[Measures].[Себестоимость базовая руб шт]
+AS iif([Measures].[Количество] = 0, null,[Measures].[Себестоимость базовая руб] / [Measures].[Количество]), 
+FORMAT_STRING = "### ### ### ##0.00", 
+VISIBLE = 1 ,  ASSOCIATED_MEASURE_GROUP = 'Продажи';             
+CREATE MEMBER CURRENTCUBE.[Measures].[Маржинальный доход]
+AS [Measures].[Профит] - [Measures].[Прямые расходы КП] - [Measures].[Прямые расходы ТН] - [Measures].[Косвенные переменные затраты], 
+FORMAT_STRING = "### ### ### ##0.00", 
+VISIBLE = 1 ,  DISPLAY_FOLDER = 'Доход' ,  ASSOCIATED_MEASURE_GROUP = 'Продажи';      
+CREATE MEMBER CURRENTCUBE.[Measures].[Маржинальный доход базовый руб]
+AS [Measures].[Оборот] - [Measures].[Себестоимость базовая руб], 
+FORMAT_STRING = "### ### ### ##0.00", 
+VISIBLE = 1 ,  DISPLAY_FOLDER = 'Доход' ,  ASSOCIATED_MEASURE_GROUP = 'Продажи';             
+CREATE MEMBER CURRENTCUBE.[Measures].[Маржа Net]
+AS iif([Measures].[Оборот] = 0, null, [Measures].[Маржинальный доход] / [Measures].[Оборот]), 
+FORMAT_STRING = "Percent", 
+VISIBLE = 1 ,  DISPLAY_FOLDER = 'Доход' ,  ASSOCIATED_MEASURE_GROUP = 'Продажи';      
+CREATE MEMBER CURRENTCUBE.[Measures].[Маржа Net базовая]
+AS iif([Measures].[Оборот] = 0, null, [Маржинальный доход базовый руб] / [Measures].[Оборот]), 
+FORMAT_STRING = "Percent", 
+VISIBLE = 1 ,  DISPLAY_FOLDER = 'Доход' ,  ASSOCIATED_MEASURE_GROUP = 'Продажи';      
+CREATE MEMBER CURRENTCUBE.[Measures].[Прямые затраты_ФИКС руб ]
+AS ([ОборотПоложительный].[ДаНет].&[1], [Measures].[Прямые расходы ТН]+[Measures].[Прямые расходы КП]), 
+FORMAT_STRING = "### ### ### ##0.00", 
+VISIBLE = 1 ,  DISPLAY_FOLDER = 'Затраты' ,  ASSOCIATED_MEASURE_GROUP = 'Продажи';      
+CREATE MEMBER CURRENTCUBE.[Measures].[Косвенные перем затраты_ФИКС руб ]
+AS ([СебестоимостьПоложительная].[ДаНет].&[1], [Measures].[Косвенные переменные затраты]), 
+FORMAT_STRING = "### ### ### ##0.00", 
+VISIBLE = 1 ,  DISPLAY_FOLDER = 'Затраты' ,  ASSOCIATED_MEASURE_GROUP = 'Продажи';      
+CREATE MEMBER CURRENTCUBE.[Measures].[Себестоимость_ФИКС  руб ]
+AS [Measures].[Себестоимость фикс руб] + [Measures].[Прямые затраты_ФИКС руб ] + [Measures].[Косвенные перем затраты_ФИКС руб ], 
+FORMAT_STRING = "### ### ### ##0.00", 
+VISIBLE = 1 ,  ASSOCIATED_MEASURE_GROUP = 'Продажи';      
+CREATE MEMBER CURRENTCUBE.[Measures].[Маржинальный доход_ФИКС]
+AS [Measures].[Оборот] - [Measures].[Себестоимость_ФИКС  руб ], 
+FORMAT_STRING = "### ### ### ##0.00", 
+VISIBLE = 1 ,  DISPLAY_FOLDER = 'Доход' ,  ASSOCIATED_MEASURE_GROUP = 'Продажи';      
+CREATE MEMBER CURRENTCUBE.[Measures].[МаржаNet_ФИКС % ]
+AS iif([Measures].[Оборот] = 0, null,  [Measures].[Маржинальный доход_ФИКС]/[Measures].[Оборот]), 
+FORMAT_STRING = "Percent", 
+VISIBLE = 1 ,  DISPLAY_FOLDER = 'Доход' ,  ASSOCIATED_MEASURE_GROUP = 'Продажи';             
+CREATE MEMBER CURRENTCUBE.[Measures].[Чистая прибыль]
+AS [Measures].[Маржинальный доход] - [Measures].[Косвенные постоянные затраты], 
+FORMAT_STRING = "### ### ### ##0.00", 
+VISIBLE = 1 ,  DISPLAY_FOLDER = 'Доход' ,  ASSOCIATED_MEASURE_GROUP = 'Продажи';             
+CREATE MEMBER CURRENTCUBE.[Measures].[Маржа NetNet]
+AS iif([Measures].[Оборот] = 0, null, [Measures].[Чистая прибыль] / [Measures].[Оборот]), 
+FORMAT_STRING = "Percent", 
+VISIBLE = 1 ,  DISPLAY_FOLDER = 'Доход' ,  ASSOCIATED_MEASURE_GROUP = 'Продажи';             
+CREATE MEMBER CURRENTCUBE.[Measures].[Чистая наценка]
+AS iif([Measures].[Себестоимость] = 0, null, [Measures].[Чистая прибыль] / [Measures].[Себестоимость]), 
+FORMAT_STRING = "Percent", 
+VISIBLE = 1 ,  DISPLAY_FOLDER = 'Доход' ,  ASSOCIATED_MEASURE_GROUP = 'Продажи';             
+CREATE MEMBER CURRENTCUBE.[Measures].[Минимальная наценка, %]
+AS iif([Measures].[Себестоимость] = 0, null, ([Measures].[Прямые расходы КП]+[Measures].[Прямые расходы ТН]+[Measures].[Косвенные переменные затраты]) / [Measures].[Себестоимость]), 
+FORMAT_STRING = "Percent", 
+VISIBLE = 1 ,  DISPLAY_FOLDER = 'Доход' ,  ASSOCIATED_MEASURE_GROUP = 'Продажи';             
+CREATE MEMBER CURRENTCUBE.[Measures].[Целевая наценка %]
+AS iif([Measures].[Себестоимость] = 0, null, ([Measures].[Прямые расходы КП]+[Measures].[Прямые расходы ТН]+[Measures].[Косвенные переменные затраты] + [Measures].[Косвенные постоянные затраты]) / [Measures].[Себестоимость]), 
+FORMAT_STRING = "Percent", 
+VISIBLE = 1 ,  DISPLAY_FOLDER = 'Доход' ,  ASSOCIATED_MEASURE_GROUP = 'Продажи';               
+
+CREATE MEMBER CURRENTCUBE.[Measures].[Бонусы покупателям,%]
+AS iif([Measures].[Оборот] = 0, null, round([Measures].[S000000001] / [Measures].[Оборот], 4)), 
+FORMAT_STRING = "Percent", 
+VISIBLE = 1 ,  DISPLAY_FOLDER = 'Прямые КП'  ;              
+
+CREATE MEMBER CURRENTCUBE.[Measures].[Штрафы,%]
+AS iif([Measures].[Оборот] = 0, null, round([Measures].[S000000002] / [Measures].[Оборот], 4)), 
+FORMAT_STRING = "Percent", 
+VISIBLE = 1 ,  DISPLAY_FOLDER = 'Прямые КП'  ;               
+
+CREATE MEMBER CURRENTCUBE.[Measures].[Премии и налоги с ФОТ ДП,%]
+AS iif([Measures].[Оборот] = 0, null, round([Measures].[S000000003]  / [Measures].[Оборот], 4)), 
+FORMAT_STRING = "Percent", 
+VISIBLE = 1 ,  DISPLAY_FOLDER = 'Прямые КП'  ;               
+
+CREATE MEMBER CURRENTCUBE.[Measures].[Затраты на промоутеров,%]
+AS iif([Measures].[Оборот] = 0, null, round([Measures].[S000000004] / [Measures].[Оборот], 4)), 
+FORMAT_STRING = "Percent", 
+VISIBLE = 1 ,  DISPLAY_FOLDER = 'Прямые КП'  ;               
+
+CREATE MEMBER CURRENTCUBE.[Measures].[Логистика до РЦ,%]
+AS iif([Measures].[Оборот] = 0, null, round([Measures].[S000000005] / [Measures].[Оборот], 4)), 
+FORMAT_STRING = "Percent", 
+VISIBLE = 1 ,  DISPLAY_FOLDER = 'Прямые КП'  ;               
+
+CREATE MEMBER CURRENTCUBE.[Measures].[Стоимость финансирования,%]
+AS iif([Measures].[Оборот] = 0, null, round([Measures].[S000000006]  / [Measures].[Оборот], 4)), 
+FORMAT_STRING = "Percent", 
+VISIBLE = 1 ,  DISPLAY_FOLDER = 'Прямые КП'  ;               
+
+CREATE MEMBER CURRENTCUBE.[Measures].[Бонусы поставщиков,%]
+AS iif([Measures].[Оборот] = 0, null, round([Measures].[S000000007]  / [Measures].[Себестоимость], 4)), 
+FORMAT_STRING = "Percent", 
+VISIBLE = 1 ,  DISPLAY_FOLDER = 'Прямые ТН'  ;               
+
+CREATE MEMBER CURRENTCUBE.[Measures].[Вознаграждения,%]
+AS iif([Measures].[Оборот] = 0, null, round([Measures].[S000000008]  / [Measures].[Себестоимость], 4)), 
+FORMAT_STRING = "Percent", 
+VISIBLE = 1 ,  DISPLAY_FOLDER = 'Прямые ТН'  ;               
+
+CREATE MEMBER CURRENTCUBE.[Measures].[Доставка от поставщиков,%]
+AS iif([Measures].[Оборот] = 0, null, round([Measures].[S000000009] / [Measures].[Себестоимость], 4)), 
+FORMAT_STRING = "Percent", 
+VISIBLE = 1 ,  DISPLAY_FOLDER = 'Прямые ТН'  ;               
+
+CREATE MEMBER CURRENTCUBE.[Measures].[Доход от отсрочки поставщиков,%]
+AS iif([Measures].[Оборот] = 0, null, round([Measures].[S000000010]  / [Measures].[Себестоимость], 4)), 
+FORMAT_STRING = "Percent", 
+VISIBLE = 1 ,  DISPLAY_FOLDER = 'Прямые ТН'  ;               
+
+CREATE MEMBER CURRENTCUBE.[Measures].[Премии и налоги с ФОТ КД,%]
+AS iif([Measures].[Оборот] = 0, null, round([Measures].[S000000011]  / [Measures].[Себестоимость], 4)), 
+FORMAT_STRING = "Percent", 
+VISIBLE = 1 ,  DISPLAY_FOLDER = 'Прямые ТН'  ;               
+
+CREATE MEMBER CURRENTCUBE.[Measures].[Затраты по рекламе,%]
+AS iif([Measures].[Оборот] = 0, null, round([Measures].[S000000012]  / [Measures].[Себестоимость], 4)), 
+FORMAT_STRING = "Percent", 
+VISIBLE = 1 ,  DISPLAY_FOLDER = 'Прямые ТН'  ;               
+
+CREATE MEMBER CURRENTCUBE.[Measures].[Производственные затраты,%]
+AS iif([Measures].[Оборот] = 0, null, round([Measures].[S000000013] / [Measures].[Себестоимость], 4)), 
+FORMAT_STRING = "Percent", 
+VISIBLE = 1 ,  DISPLAY_FOLDER = 'Прямые ТН'  ;               
+
+CREATE MEMBER CURRENTCUBE.[Measures].[Целевые,%]
+AS iif([Measures].[Оборот] = 0, null, round([Measures].[S000000014]  / [Measures].[Себестоимость], 4)), 
+FORMAT_STRING = "Percent", 
+VISIBLE = 1 ,  DISPLAY_FOLDER = 'Прямые ТН'  ;               
+
+CREATE MEMBER CURRENTCUBE.[Measures].[Услуги по обработке,%]
+AS iif([Measures].[Себестоимость] = 0, null, round([Measures].[S000000015] / [Measures].[Себестоимость], 4)), 
+FORMAT_STRING = "Percent", 
+VISIBLE = 1 ,  DISPLAY_FOLDER = 'Косвенные переменные'  ;               
+
+CREATE MEMBER CURRENTCUBE.[Measures].[Услуги по хранению,%]
+AS iif([Measures].[Себестоимость] = 0, null, round([Measures].[S000000016] / [Measures].[Себестоимость], 4)), 
+FORMAT_STRING = "Percent", 
+VISIBLE = 1 ,  DISPLAY_FOLDER = 'Косвенные переменные'  ;               
+
+CREATE MEMBER CURRENTCUBE.[Measures].[Услуги Сервисного Центра,%]
+AS iif([Measures].[Себестоимость] = 0, null, round([Measures].[S000000017] / [Measures].[Себестоимость], 4)), 
+FORMAT_STRING = "Percent", 
+VISIBLE = 1 ,  DISPLAY_FOLDER = 'Косвенные переменные'  ;               
+
+CREATE MEMBER CURRENTCUBE.[Measures].[Косв.переменные: НДС,%]
+AS iif([Measures].[Себестоимость] = 0, null, round([Measures].[S000000018] / [Measures].[Себестоимость], 4)), 
+FORMAT_STRING = "Percent", 
+VISIBLE = 1 ,  DISPLAY_FOLDER = 'Косвенные переменные'  ;        
+CREATE MEMBER CURRENTCUBE.[Measures].[Косв.переменные: Прочие, %]
+AS iif([Measures].[Себестоимость] = 0, null, round([Measures].[S000000021] / [Measures].[Себестоимость], 4)), 
+FORMAT_STRING = "Percent", 
+VISIBLE = 1 ,  DISPLAY_FOLDER = 'Косвенные переменные'  ;               
+
+CREATE MEMBER CURRENTCUBE.[Measures].[Косвенные постоянные,%]
+AS iif([Measures].[Оборот] = 0, null, iif([Measures].[Себестоимость] = 0, null, round([Measures].[S000000019] / [Measures].[Себестоимость], 4))), 
+FORMAT_STRING = "Percent", 
+VISIBLE = 1 ,  DISPLAY_FOLDER = 'Косвенные постоянные'  ;         
+CREATE MEMBER CURRENTCUBE.[Measures].[Косвенные переменные, %]
+AS iif([Measures].[Себестоимость] = 0, null, round([Косвенные переменные затраты] / [Measures].[Себестоимость], 4)), 
+FORMAT_STRING = "Percent", 
+VISIBLE = 1 ,  DISPLAY_FOLDER = 'Косвенные переменные'  ;               
+
+CREATE MEMBER CURRENTCUBE.[Measures].[Прочие,%]
+AS iif([Measures].[Оборот] = 0, null, round([Measures].[S000000020]  / [Measures].[Оборот], 4)), 
+FORMAT_STRING = "Percent", 
+VISIBLE = 1 ,  DISPLAY_FOLDER = 'Прямые КП'  ;
